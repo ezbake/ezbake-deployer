@@ -1,0 +1,51 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  config.vm.define "openshift" do |os|
+    os.vm.box = "openshift-3"
+    # TODO put this box to this URL somehow
+    #os.vm.box_url = "<path to>/openshift-3.box"
+
+    # Create a private network, which allows host-only access to the machine
+    # using a specific IP.
+    #config.vm.network :private_network, ip: "192.168.33.10"
+
+    os.vm.network :public_network
+
+    os.ssh.forward_agent = true
+    os.vm.provider :virtualbox do |vb|
+      # Use VBoxManage to customize the VM. For example to change memory:
+      vb.customize ["modifyvm", :id, "--memory", "1024"]
+    end
+    os.vm.provision "shell", path: "get_oso_ip.sh"
+  end
+  config.vm.define "ezbakedev", primary: true do |ezbake|
+    ezbake.vm.box = "ezbake"
+    #ezbake.vm.box_url = "<path to>/ezbake.box"
+
+    ezbake.vm.hostname = "EzbakeVagrant"
+
+    # Create a private network, which allows host-only access to the machine
+    # using a specific IP.
+    ezbake.vm.network :private_network, ip: "192.168.50.101"
+    ezbake.vm.network :forwarded_port, host: 2181, guest: 2181
+    ezbake.ssh.forward_agent = true
+
+    ezbake.vm.synced_folder "../../", "/home/vagrant/ezdeployer"
+
+    ezbake.vm.provider :virtualbox do |vb|
+      # Use VBoxManage to customize the VM. For example to change memory:
+      vb.customize ["modifyvm", :id, "--memory", "1024"]
+    end
+    ezbake.vm.provision "shell", inline: "service iptables stop && chkconfig iptables off"
+    ezbake.vm.provision "shell", path: "setup_ezbake.sh"
+    ezbake.vm.provision "shell", path: "setup_ezconfig.sh"
+    ezbake.vm.provision "shell", path: "update_ezbake_dns.sh"
+    ezbake.vm.provision "shell", path: "setup_ezbake_openshift_connection.sh"
+  end
+end

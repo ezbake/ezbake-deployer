@@ -1,0 +1,18 @@
+#!/bin/sh
+
+dir=${OPENSHIFT_REPO_DIR}/config
+secret=$OPENSHIFT_SECRET_TOKEN
+binary="/opt/ezbake/ezbake-utils-encrypted-properties-encryption-app/ezbake-utils-encrypted-properties-encryption-app.jar"
+
+if [ -e ${dir}/pre_deploy.sh ]
+then
+        chmod +x ${dir}/pre_deploy.sh
+        ${dir}/pre_deploy.sh
+fi
+
+for file in `ls ${dir}/encrypted_*.properties`
+do
+  echo "encrypting $file"
+  java -jar ${binary} --input-file $file --secret $secret --output-file $file
+done
+

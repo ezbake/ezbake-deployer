@@ -1,0 +1,6 @@
+#!/bin/bash
+BIN_DIR=$(cd $(dirname $0); pwd)
+export EZCONFIGURATION_DIR=${EZCONFIGURATION_DIR:=/etc/sysconfig/ezbake}
+export EZDEPLOYER_CONF_DIR=${EZDEPLOYER_CONF_DIR:=$BIN_DIR/../config}
+ezDeployerJar=$BIN_DIR/../lib/:$BIN_DIR/slf4j-nop.jar:$BIN_DIR/ezdeployer-cli.jar
+java -Xmx2g -cp $ezDeployerJar ezbake.deployer.cli.EzDeployerCli "$@"

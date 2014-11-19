@@ -1,0 +1,3 @@
+echo "Setting logback.xml"
+export log_file="${OPENSHIFT_LOG_DIR}${OPENSHIFT_NAMESPACE}_${OPENSHIFT_GEAR_NAME}.log"
+export PREPEND_JAVA_OPTS=" -Dlogback.configurationFile=$OPENSHIFT_REPO_DIR/config/logback.xml"

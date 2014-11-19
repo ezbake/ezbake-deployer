@@ -1,0 +1,8 @@
+#!/bin/bash
+BIN_DIR=$(cd $(dirname $0); pwd)
+export EZCONFIGURATION_DIR=${EZCONFIGURATION_DIR:=/etc/sysconfig/ezbake}
+export EZDEPLOYER_SERVICE_NAME=${EZDEPLOYER_SERVICE_NAME:=ezdeployer}
+
+source ~/.bash_profile
+
+java -jar $BIN_DIR/thrift-runner.jar "$@" -j $BIN_DIR/ezdeployer.jar -s "$EZDEPLOYER_SERVICE_NAME" --host_name $HOSTNAME -p 30000:34999 -D ezbake.security.ssl.dir=/opt/ezdeployer/etc/ezbake/pki -P /opt/ezdeployer/etc -D ezbake.security.app.id=04 -D openshift.timeout=600000 -D ezbake.shared.secret.environment.variable="EZBAKE_ENCRYPTION_SECRET" -c ezbake.deployer.EzBakeDeployerHandler

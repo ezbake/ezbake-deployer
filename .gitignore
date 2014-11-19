@@ -1,0 +1,10 @@
+.idea
+*.iml
+target
+tmp
+nohup.out
+src/test/inputs/*
+.classpath
+.project
+.settings/
+dependency-reduced-pom.xml

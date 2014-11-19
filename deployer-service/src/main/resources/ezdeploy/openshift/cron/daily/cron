@@ -1,0 +1,3 @@
+cp /etc/sysconfig/ezbake/logrotate.conf $OPENSHIFT_LOG_DIR/
+cd $OPENSHIFT_LOG_DIR
+logrotate -s $OPENSHIFT_CRON_DIR/status $OPENSHIFT_LOG_DIR/logrotate.conf
